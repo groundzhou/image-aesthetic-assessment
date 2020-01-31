@@ -1,1 +1,1 @@
-# Image-aesthetic-assesment
+# Image Aesthetic Assessment
