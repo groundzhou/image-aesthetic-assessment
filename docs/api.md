@@ -2,7 +2,9 @@
 title: API设计文档
 ---
 
-接口描述：
+# 1. 图片评价接口
+
+接口描述：发送openid、图片，返回图片评分结果
 
 URL： https://api.groundzhou.cn:5000
 
@@ -11,8 +13,12 @@ URL： https://api.groundzhou.cn:5000
 请求
 ```json
 {
-    Accept: 'application/json',
-    method: 'GET'
+    "Accept": "application/json",
+    "method": "POST",
+    "data": {
+        "image": "",
+        "_openid": "123"  
+  }
 }
 ```
 
@@ -24,7 +30,7 @@ URL： https://api.groundzhou.cn:5000
     "data": {
         "score": 7,
         "light": 9.2,
-        "color": 6,
+        "color": 6
     }
 }
 ```
