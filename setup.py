@@ -10,6 +10,7 @@ setup(
         'Flask',
         'Flask_SQLAlchemy',
         'Click',
-        'uWSGI'
+        'uWSGI',
+        'psycopg2'
     ],
 )
