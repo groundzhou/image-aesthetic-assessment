@@ -7,13 +7,13 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev',
-        SQLALCHEMY_DATABASE_URI='sqlite:///'+os.path.join(app.instance_path, 'aesthetics.db'),
+        SQLALCHEMY_DATABASE_URI='sqlite:///'+os.path.join(app.instance_path, 'iaa.db'),
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
     )
 
     if not test_config:
         # load the instance config, if exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
+        app.config.from_pyfile('dev_config.py', silent=True)
     else:
         # load the test config if passed in
         app.config.from_mapping(test_config)
@@ -25,7 +25,7 @@ def create_app(test_config=None):
         pass
 
     # initialize app with database
-    from webapp.database import init_app
+    from app.database import init_app
     init_app(app)
 
     # a simple page that says hello
@@ -34,7 +34,7 @@ def create_app(test_config=None):
         return 'Hello, World!'
 
     # register blueprints
-    from webapp import api
+    from app import api
     app.register_blueprint(api.bp)
 
     # 解决跨域问题
