@@ -13,20 +13,25 @@ URL： https://api.groundzhou.cn:5000
 请求
 ```json
 {
-    "Accept": "application/json",
+    "url": "https://api.groundzhou.cn:5000",
     "method": "POST",
     "data": {
-        "image": "",
-        "_openid": "123"  
-  }
+        "openid": "123" ,
+        "image": "sadfasf"    
+    },
+    "header": {
+        "content-type": "application/json"
+    }
 }
 ```
 
 响应
+1. 成功：
+
 ```json
 {
     "code": 0,
-    "message": "OK",
+    "message": "success",
     "data": {
         "score": 7,
         "light": 9.2,
