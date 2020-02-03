@@ -28,10 +28,10 @@ def create_app(test_config=None):
     from app.database import init_app
     init_app(app)
 
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
+    # a simple page that test api
+    @app.route('/test')
+    def test():
+        return app.send_static_file('test.html')
 
     # register blueprints
     from app import api
@@ -44,6 +44,7 @@ def create_app(test_config=None):
 
 
 def cors(res):
+    # 添加允许的请求头，解决跨域问题
     res.headers['Access-Control-Allow-Origin'] = request.headers.get('Origin', default='*')
-    res.headers["Access-Control-Allow-Credentials"] = 'true'
+    res.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
     return res

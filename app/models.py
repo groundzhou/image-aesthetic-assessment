@@ -1,7 +1,7 @@
 from app.database import db
 
 
-class Test(db.Model):
-    __tablename__ = 'test'
+class User(db.Model):
+    __tablename__ = 'user'
 
-    id = db.Column(db.Integer, primary_key=True)
+    openid = db.Column(db.Integer, primary_key=True)
