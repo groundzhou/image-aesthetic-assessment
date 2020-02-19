@@ -1,4 +1,0 @@
-Flask==1.1.1
-Flask-SQLAlchemy==2.4.1
-psycopg2==2.8.4
-uWSGI==2.0.18
