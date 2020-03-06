@@ -27,18 +27,15 @@ class AVADataset(Dataset):
         image_id = row['image_id']
         image_path = os.path.join(self.root_dir, '{}.jpg'.format(image_id))
         image = pil_loader(image_path)
-        sample = self.transform(image)
+        x = self.transform(image)
 
         y = row[1:].values.astype("float32")
         p = y / y.sum()
 
-        return sample, p
+        return x, p
 
 
 def pil_loader(path):
     with open(path, 'rb') as f:
         with Image.open(f) as img:
             return img.convert('RGB')
-
-
-
