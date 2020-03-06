@@ -130,3 +130,9 @@ dmypy.json
 
 # PyCharm project
 .idea/
+
+# others
+/checkpoints
+/logs
+/data
+/test
