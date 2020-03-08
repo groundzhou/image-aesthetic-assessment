@@ -1,8 +1,22 @@
+import numpy as np
 import torch
 from torchvision.models import mobilenet_v2
 from PIL import Image
 from utils import val_transform
 from model import Nima
+
+
+def get_mean_score(score):
+    si = np.arange(1, 11)
+    mean = (si * score).sum()
+    return mean
+
+
+def get_score(scores):
+    si = np.arange(1, 11)
+    mean = get_mean_score(scores)
+    std = np.sqrt(np.sum(((si - mean) ** 2) * scores))
+    return mean, std
 
 
 class InferenceModel:
@@ -20,13 +34,13 @@ class InferenceModel:
         image = image.unsqueeze(dim=0)
         image = image.to(self.device)
         with torch.no_grad():
-            out = self.model(image)
-            return out
+            out = self.model(image).numpy()[0]
+            return get_score(out)
 
 
 def main():
-    # image = Image.open('/home/ground/share/Pictures/wallhaven-j5we85.jpg')
-    image = Image.open('/home/ground/share/image-aesthetic-assessment/data/images/204786.jpg')
+    image = Image.open('/home/ground/share/Pictures/wallhaven-j5we85.jpg')
+    #image = Image.open('/home/ground/share/image-aesthetic-assessment/data/images/204786.jpg')
     m = InferenceModel()
     print(m.predict(image))
 
