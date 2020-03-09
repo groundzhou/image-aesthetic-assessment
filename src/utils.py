@@ -1,3 +1,4 @@
+import numpy as np
 from torchvision import transforms
 
 normalize = transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
@@ -15,6 +16,19 @@ val_transform = transforms.Compose([
     transforms.ToTensor(),
     normalize
 ])
+
+
+def get_mean_score(scores):
+    si = np.arange(1, 11)
+    mean = (si * scores).sum()
+    return mean
+
+
+def get_score(scores):
+    si = np.arange(1, 11)
+    mean = get_mean_score(scores)
+    std = np.sqrt(np.sum(((si - mean) ** 2) * scores))
+    return mean, std
 
 
 class Metrics:
