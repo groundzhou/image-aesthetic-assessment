@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Image Aesthetic Assessment - API test</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/qs/6.7.0/qs.min.js"></script>
+</head>
+
+<body>
+<div id="app">
+    openid: <input type="input" v-model="openid">
+    <br><br>
+    <input type="file" name="image" accept="image/jpeg, image/png" @change="chooseImage">
+    <br><br>
+    <button @click="uploadImage">上传</button>
+    <br><br>
+    {{ info }}
+</div>
+
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            info: null,
+            openid: 123,
+            image_file: null
+        },
+        methods: {
+            chooseImage: function (e) {
+                this.image_file = e.target.files[0]
+                console.log(this.image_file)
+            },
+            uploadImage: function () {
+                let formData = new FormData();
+                let data = JSON.stringify({
+                    openid: this.openid
+                })
+                formData.append('image', this.image_file);
+                formData.append('openid', this.openid);
+
+                axios({
+                    method: 'post',
+                    url: 'https://api.groundzhou.cn:5000',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'multipart/form-data'
+                    },
+                    data: formData,
+                }).then(response => this.info = response.data.data)
+            }
+        }
+    })
+</script>
+</body>

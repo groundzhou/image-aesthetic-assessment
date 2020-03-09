@@ -38,3 +38,42 @@ class Nima(nn.Module):
         x = x.view(x.size(0), -1)
         x = self.classifier(x)
         return x
+
+
+class StyleModel(nn.Module):
+    """Style classfier model class
+
+    Attributes:
+        features: Features of Nima model.
+        classifier: Classifier of Nima model.
+    """
+
+    def __init__(self,
+                 base_model: nn.Module,
+                 in_features: int,
+                 dropout: float,
+                 num_classes=14):
+        """Inits Network with a base model
+        Args:
+            base_model: Base model.
+            dropout: Dropout rate.
+            in_features: Output size of base model.
+            num_classes: Number of classes.
+        """
+        super(StyleModel, self).__init__()
+
+        # get base model features
+        self.features = base_model.features
+
+        # building classifier
+        self.classifier = nn.Sequential(
+            nn.Dropout(p=dropout),
+            nn.Linear(in_features=in_features, out_features=num_classes),
+            nn.Sigmoid()
+        )
+
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(x.size(0), -1)
+        x = self.classifier(x)
+        return x
