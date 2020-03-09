@@ -8,7 +8,7 @@ class EMDLoss(nn.Module):
     def __init__(self):
         super(EMDLoss, self).__init__()
 
-    def forward(self, p_true: torch.Tensor, p_pred: torch.Tensor):
+    def forward(self, p_pred: torch.Tensor, p_true: torch.Tensor):
         assert p_true.shape == p_pred.shape, 'Length of the two distribution must be the same'
         cdf_target = torch.cumsum(p_true, dim=1)  # cdf for values [1, 2, ..., 10]
         cdf_estimate = torch.cumsum(p_pred, dim=1)  # cdf for values [1, 2, ..., 10]

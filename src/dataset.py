@@ -8,7 +8,7 @@ from PIL import Image
 class AVADataset(Dataset):
     """AVA dataset"""
 
-    def __init__(self, csv_file, root_dir, transform, type='Nima'):
+    def __init__(self, csv_file, root_dir, transform, model='Nima'):
         """
         Args:
             csv_file（string）：带注释的csv文件的路径。
@@ -18,7 +18,7 @@ class AVADataset(Dataset):
         self.df = pd.read_csv(csv_file)
         self.root_dir = root_dir
         self.transform = transform
-        self.type = type
+        self.model = model
 
     def __len__(self):
         return self.df.shape[0]
@@ -35,7 +35,7 @@ class AVADataset(Dataset):
 
         x = self.transform(image)
         y = row[1:].values.astype("float32")
-        if self.type == 'Nima':
+        if self.model == 'Nima':
             y = y / y.sum()
         return x, y
 
