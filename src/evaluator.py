@@ -2,8 +2,8 @@ import torch
 from torchvision.models import mobilenet_v2
 from PIL import Image
 
-from model import Nima, StyleModel
-from utils import get_score, val_transform
+from .model import Nima, StyleModel
+from .utils import get_score, val_transform
 
 
 class InferenceModel:
@@ -14,25 +14,25 @@ class InferenceModel:
         style_model: Image style classifier.
     """
 
-    def __init__(self):
+    def __init__(self, aesthetic_model_path, style_model_path):
         base_model = mobilenet_v2(pretrained=True)
         self.device = torch.device('cpu' if torch.cuda.is_available() else 'cpu')
 
         # init aesthetic model
         self.aesthetic_model = Nima(base_model, in_features=62720, dropout=0.75)
         self.aesthetic_model.load_state_dict(
-            torch.load('../checkpoints/aesthetic-epoch-44.pth', map_location=self.device)['model_state_dict'])
+            torch.load(aesthetic_model_path, map_location=self.device)['model_state_dict'])
         self.aesthetic_model = self.aesthetic_model.to(self.device)
         self.aesthetic_model.eval()
 
         # init style model
         self.style_model = StyleModel(base_model, in_features=62720, dropout=0.75)
         self.style_model.load_state_dict(
-            torch.load('../checkpoints/style-epoch-45.pth', map_location=self.device)['model_state_dict'])
+            torch.load(style_model_path, map_location=self.device)['model_state_dict'])
         self.style_model = self.style_model.to(self.device)
         self.style_model.eval()
 
-    def predict(self, image):
+    def predict(self, image: Image.Image):
         """Evaluate the input image
 
         Args:
@@ -63,11 +63,11 @@ class InferenceModel:
         image = image.unsqueeze(dim=0)
         image = image.to(self.device)
         with torch.no_grad():
-            aesthetic_score = get_score(self.aesthetic_model(image).cpu().numpy()[0])
-            styles = self.style_model(image).cpu().numpy()[0]
+            aesthetic_score = get_score(self.aesthetic_model(image).cpu().numpy()[0].tolist())
+            styles = self.style_model(image).cpu().numpy()[0].tolist()
             return {'aesthetic': dict(zip(['score', 'std'], aesthetic_score)),
                     'style': dict(zip(['Complementary_Colors',
-                                       'Duotones'
+                                       'Duotones',
                                        'HDR',
                                        'Image_Grain',
                                        'Light_On_White',
@@ -86,7 +86,7 @@ def main():
     # image = Image.open('/home/ground/share/Pictures/wallhaven-j5we85.jpg')
     image = Image.open('../data/images/954187.jpg')
     m1 = InferenceModel()
-    print(m1.predict(image))
+    print(m1.predict(image.convert('RGB')))
 
 
 if __name__ == '__main__':

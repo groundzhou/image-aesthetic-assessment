@@ -29,9 +29,9 @@ def create_app(test_config=None):
     init_app(app)
 
     # a simple page that test api
-    @app.route('/test')
+    @app.route('/')
     def test():
-        return app.send_static_file('test.html')
+        return app.send_static_file('index.html')
 
     # register blueprints
     from app import api
