@@ -1,13 +1,14 @@
+import os
+
 from torch.utils.data import Dataset
 import pandas as pd
-import os
 from PIL import Image
 
 
 class AVADataset(Dataset):
     """AVA dataset"""
 
-    def __init__(self, csv_file, root_dir, transform):
+    def __init__(self, csv_file, root_dir, transform, type='Nima'):
         """
         Args:
             csv_file（string）：带注释的csv文件的路径。
@@ -17,6 +18,7 @@ class AVADataset(Dataset):
         self.df = pd.read_csv(csv_file)
         self.root_dir = root_dir
         self.transform = transform
+        self.type = type
 
     def __len__(self):
         return self.df.shape[0]
@@ -26,13 +28,16 @@ class AVADataset(Dataset):
 
         image_id = row['image_id']
         image_path = os.path.join(self.root_dir, '{}.jpg'.format(image_id))
-        image = pil_loader(image_path)
+        try:
+            image = pil_loader(image_path)
+        except:
+            return self.__getitem__(item-1)
+
         x = self.transform(image)
-
         y = row[1:].values.astype("float32")
-        p = y / y.sum()
-
-        return x, p
+        if self.type == 'Nima':
+            y = y / y.sum()
+        return x, y
 
 
 def pil_loader(path):
