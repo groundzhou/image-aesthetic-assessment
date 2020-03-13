@@ -32,9 +32,22 @@ def score():
 
         image = Image.open(image_upload).convert('RGB')
         result = model.predict(image)
+        data = {'aesthetic': result['aesthetic']}
+        if result['aesthetic']['score'] > 6:
+            data['remark'] = '高超的构图技巧，精湛的细节处理，精彩瞬间，一拍即触。'
+        elif result['aesthetic']['score'] > 5.5:
+            data['remark'] = '作品比较优秀。'
+        else:
+            data['remark'] = '作品一般'
+        if result['aesthetic']['std'] > 1.4:
+            data['remark'] = data['remark'] + '审美独特，对于拍照，有自己深入的思考，拍摄作品容易出彩。'
+        else:
+            data['remark'] = data['remark'] + '审美大众化，拍摄作品平中出奇，迎合大众的审美情趣。'
+        data['tags'] = [' '.join(k.split('_')) for k, v in result['style'].items() if v > 0.1]
+
         return jsonify(code=0,
                        message='success',
-                       data=result)
+                       data=data)
 
 
 # 注册时记录用户openid
